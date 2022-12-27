@@ -17,12 +17,13 @@ router.post('/register',userController.userRegistration)
 router.post('/login',userController.userLogin)
 router.post('/sent-reset-password-email',userController.sendUserPasswordResetEmail)
 router.put('/reset-password/:id/:token',userController.userPasswordReset)
-router.put('/confirm-seat/:id/:token',bookingController.confirmationOfBooking)
 
 // protected routes
 router.put('/changepassword',userController.changeUserPassword)
 router.get('/loggeduser',userController.loggedUser)
 router.post('/reserve-seat',bookingController.reservingSeat)
+router.put('/confirm-seat/:id/:token',bookingController.confirmationOfBooking)
+
 
 
 // export

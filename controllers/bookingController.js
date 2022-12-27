@@ -24,7 +24,7 @@ class bookingController{
                 await newBookedSeat.save()
                 const saved_user=await bookingModel.findOne({seatNo:seatNo})
                 const secret=saved_user._id+process.env.JWT_SECRET_KEY
-                const token=jwt.sign({userID:saved_user._id},secret,{expiresIn:'15m'})
+                const token=jwt.sign({userID:saved_user._id,seatNo:seatNo},secret,{expiresIn:'15m'})
                 res.status(201).send({"status":"success","message":"seat reserve successfully...","token":token})
             }
         }
@@ -33,23 +33,30 @@ class bookingController{
     static confirmationOfBooking=async (req,res)=>{
         const{verify}=req.body
         const{id,token}=req.params
-        const user=await bookingModel.findById(id)
-        const secret=+process.env.JWT_SECRET_KEY
-        try {
-            jwt.verify(token,secret)
-            if(!verify){
-                await bookingModel.findByIdAndDelete(id)
-                res.send({"status":"failed","message":"Seat is not confirme"})  
-            }
-            else{
-                await bookingModel.findByIdAndUpdate(user._id,{$set:{confirmSeatProcess:true}})
-                res.send({"status":"success","message":"Seat is confirme"})  
-            }
-            
-        } catch (error) {
-            console.log(error)
-            res.send({"status":"failed","message":"Invalid token"}) 
+        const seat=await bookingModel.findById(id)
+        if(!seat){
+            res.send({"status":"failed","message":"Seat is not reserve...."})
         }
+        else{
+            const secret=id+process.env.JWT_SECRET_KEY
+            try {
+                jwt.verify(token,secret)
+                if(!verify){
+                    await bookingModel.findByIdAndDelete(id)
+                    res.send({"status":"failed","message":"Seat is not confirme"})  
+                }
+                else{
+                    await bookingModel.findByIdAndUpdate(seat._id,{$set:{confirmSeatProcess:true}})
+                    res.send({"status":"success","message":"Seat is confirme"})  
+                }
+                
+            } catch (error) {
+                await bookingModel.findByIdAndDelete(id)
+                console.log(error)
+                res.send({"status":"failed","message":"Invalid token"}) 
+            }
+        }
+        
         
     }
 }
