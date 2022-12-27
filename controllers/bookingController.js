@@ -48,16 +48,14 @@ class bookingController{
                 else{
                     await bookingModel.findByIdAndUpdate(seat._id,{$set:{confirmSeatProcess:true}})
                     res.send({"status":"success","message":"Seat is confirme"})  
-                }
-                
-            } catch (error) {
+                }             
+            }
+            catch (error) {
                 await bookingModel.findByIdAndDelete(id)
                 console.log(error)
                 res.send({"status":"failed","message":"Invalid token"}) 
             }
-        }
-        
-        
+        }      
     }
 }
 
