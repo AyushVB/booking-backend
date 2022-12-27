@@ -2,9 +2,26 @@ import bookingModel from '../models/bookingLog.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
+
 dotenv.config()
 
 class bookingController{
+    static reserve=(data,count)=>{
+        let resSeat=[]
+        for (let i = 0; i <count; i++) {
+           
+            resSeat.push(data[i]['seatNo'])
+            
+        }
+        return resSeat
+    }
+    static reservationFailed=async(seatNo)=>{
+        const saved_user=await bookingModel.findOne({seatNo:seatNo})
+        if(!(saved_user.confirmSeatProcess)){
+            await bookingModel.findByIdAndDelete(saved_user._id)
+        }
+        
+    }
     static reservingSeat=async (req,res)=>{
         const {seatNo}=req.body
         const vallid=await bookingModel.findOne({seatNo:seatNo})
@@ -25,7 +42,8 @@ class bookingController{
                 const saved_user=await bookingModel.findOne({seatNo:seatNo})
                 const secret=saved_user._id+process.env.JWT_SECRET_KEY
                 const token=jwt.sign({userID:saved_user._id,seatNo:seatNo},secret,{expiresIn:'15m'})
-                res.status(201).send({"status":"success","message":"seat reserve successfully...","token":token})
+                setTimeout(this.reservationFailed,15*60*1000,seatNo)
+                res.status(201).send({"status":"success","message":"seat reserve successfully...","id":saved_user._id,"token":token})
             }
         }
         
@@ -56,6 +74,13 @@ class bookingController{
                 res.send({"status":"failed","message":"Invalid token"}) 
             }
         }      
+    }
+    static reserveSeats=async (req,res)=>{
+        const data=await bookingModel.find({},{'seatNo':1,_id:0}).sort({'seatNo':1})
+        const count =await bookingModel.countDocuments({})
+        const resSeat=bookingController.reserve(data,count)
+        res.send({"status":"success","resSeatCount":count,"resSeat":resSeat})  
+        
     }
 }
 

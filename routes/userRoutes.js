@@ -17,6 +17,7 @@ router.post('/register',userController.userRegistration)
 router.post('/login',userController.userLogin)
 router.post('/sent-reset-password-email',userController.sendUserPasswordResetEmail)
 router.put('/reset-password/:id/:token',userController.userPasswordReset)
+router.get('/reserve',bookingController.reserveSeats)
 
 // protected routes
 router.put('/changepassword',userController.changeUserPassword)

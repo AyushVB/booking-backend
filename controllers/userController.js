@@ -110,8 +110,7 @@ class userController{
                 const secret=user._id+process.env.JWT_SECRET_KEY
                 const token=jwt.sign({userID:user._id},secret,{expiresIn:'15m'})
                 const link=`http://localhost:3000/api/user/reset/${user._id}/${token}`
-                console.log(`frontend link where we reset password : ${link}`)
-
+                
                 // sent email 
                 const info=transporter.sendMail({
                     from:process.env.EMAIL_FROM,

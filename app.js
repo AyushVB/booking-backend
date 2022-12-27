@@ -20,8 +20,11 @@ connectDb(DB_URL)
 // JSON
 app.use(express.json())
 
-// LOAD routes
+// LOAD user routes
 app.use('/api/user',userRoutes)
+
+// LOAD booking routes
+
 
 app.listen(PORT,()=>{
     console.log(`listen on PORT: ${PORT}`)
