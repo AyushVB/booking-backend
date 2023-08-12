@@ -1,31 +1,29 @@
 import express from "express"
 import userController from "../controllers/userController.js";
-import bookingController from "../controllers/bookingController.js";
 import checkUserAuth from "../middlewares/auth-middleware.js";
 
-const router=express.Router();
+const userRoutes=express.Router();
 
 // route level middleware
-router.use('/changepassword',checkUserAuth)
-router.use('/loggeduser',checkUserAuth)
-router.use('/reserve-seat',checkUserAuth)
-router.use('/confirm-seat/:id/:token',checkUserAuth)
+userRoutes.use('/changepassword',checkUserAuth)
+userRoutes.use('/loggeduser',checkUserAuth)
+userRoutes.use('/reserve-seat',checkUserAuth)
+userRoutes.use('/confirm-seat/:id/:token',checkUserAuth)
 
 
 // Public routes
-router.post('/register',userController.userRegistration)
-router.post('/login',userController.userLogin)
-router.post('/sent-reset-password-email',userController.sendUserPasswordResetEmail)
-router.put('/reset-password/:id/:token',userController.userPasswordReset)
-router.get('/reserve',bookingController.reserveSeats)
+userRoutes.post('/register',userController.userRegistration)
+userRoutes.post('/login',userController.userLogin)
+userRoutes.post('/sent-reset-password-email',userController.sendUserPasswordResetEmail)
+userRoutes.put('/reset-password/:id/:token',userController.userPasswordReset)
+
 
 // protected routes
-router.put('/changepassword',userController.changeUserPassword)
-router.get('/loggeduser',userController.loggedUser)
-router.post('/reserve-seat',bookingController.reservingSeat)
-router.put('/confirm-seat/:id/:token',bookingController.confirmationOfBooking)
+userRoutes.put('/changepassword',userController.changeUserPassword)
+userRoutes.get('/loggeduser',userController.loggedUser)
+
 
 
 
 // export
-export default router
+export default userRoutes

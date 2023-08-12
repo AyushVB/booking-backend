@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDb from './config/connectDB.js'
 import userRoutes from './routes/userRoutes.js'
+import bookingRoutes from './routes/bookingRoutes.js'
 
 dotenv.config()
 
@@ -24,7 +25,7 @@ app.use(express.json())
 app.use('/api/user',userRoutes)
 
 // LOAD booking routes
-
+app.use('/api/booking',bookingRoutes)
 
 app.listen(PORT,()=>{
     console.log(`listen on PORT: ${PORT}`)
