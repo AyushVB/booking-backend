@@ -82,6 +82,14 @@ class bookingController{
         res.send({"status":"success","resSeatCount":count,"resSeat":resSeat})  
         
     }
+    static reserveSeatsByID=async (req,res)=>{
+        const id=req.query.id
+        const data=await bookingModel.find({_id:id},{'seatNo':1,_id:0}).sort({'seatNo':1})
+        const count =await bookingModel.countDocuments({})
+        const resSeat=bookingController.reserve(data,count)
+        res.send({"status":"success","resSeatCount":count,"resSeat":resSeat})  
+        
+    }
 }
 
 // export
