@@ -10,11 +10,6 @@ bookingRoutes.use('/reserve-id',checkUserAuth)
 bookingRoutes.use('/reserve-seat',checkUserAuth)
 bookingRoutes.use('/confirm-seat/:id/:token',checkUserAuth)
 
-
-// Public routes
-
-
-
 // protected routes
 bookingRoutes.get('/reserve',bookingController.reserveSeats)
 bookingRoutes.get('/reserve-id',bookingController.reserveSeatsByID)

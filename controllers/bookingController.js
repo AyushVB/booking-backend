@@ -85,7 +85,7 @@ class bookingController{
     static reserveSeatsByID=async (req,res)=>{
         const id=req.user._id
         const data=await bookingModel.find({_id:id},{'seatNo':1,_id:0}).sort({'seatNo':1})
-        const count =await bookingModel.countDocuments({})
+        const count =await bookingModel.countDocuments({_id:id})
         const resSeat=bookingController.reserve(data,count)
         res.send({"status":"success","resSeatCount":count,"resSeat":resSeat})  
         
