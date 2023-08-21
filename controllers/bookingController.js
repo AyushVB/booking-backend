@@ -29,7 +29,7 @@ class bookingController{
             res.status(409).send({"status":"failed","message":"Seat is already booked or reserved..."})
         }
         else{
-            if(seatNo && seatNo<=0 && seatNo>500){
+            if(seatNo && seatNo<=0 && seatNo>100){
                 res.status(401).send({"status":"failed","message":"seat no is not vallid...."})
             }
             else{
@@ -41,15 +41,15 @@ class bookingController{
                 await newBookedSeat.save()
                 const saved_user=await bookingModel.findOne({seatNo:seatNo})
                 const secret=saved_user._id+process.env.JWT_SECRET_KEY
-                const token=jwt.sign({userID:saved_user._id,seatNo:seatNo},secret,{expiresIn:'15m'})
-                setTimeout(this.reservationFailed,15*60*1000,seatNo)
+                const token=jwt.sign({userID:saved_user._id,seatNo:seatNo},secret,{expiresIn:'6m'})
+                setTimeout(this.reservationFailed,5*60*1000,seatNo)
                 res.status(201).send({"status":"success","message":"seat reserve successfully...","id":saved_user._id,"token":token})
             }
         }
         
     }
     static confirmationOfBooking=async (req,res)=>{
-        const{verify}=req.body
+        const{email}=req.body
         const{id,token}=req.params
         const seat=await bookingModel.findById(id)
         if(!seat){
@@ -59,13 +59,13 @@ class bookingController{
             const secret=id+process.env.JWT_SECRET_KEY
             try {
                 jwt.verify(token,secret)
-                if(!verify){
+                if(req.user.email!=email){
                     await bookingModel.findByIdAndDelete(id)
-                    res.send({"status":"failed","message":"Seat is not confirme"})  
+                    res.send({"status":"failed","message":"Seat is not confirm"})  
                 }
                 else{
                     await bookingModel.findByIdAndUpdate(seat._id,{$set:{confirmSeatProcess:true}})
-                    res.send({"status":"success","message":"Seat is confirme"})  
+                    res.send({"status":"success","message":"Seat is confirm"})  
                 }             
             }
             catch (error) {
